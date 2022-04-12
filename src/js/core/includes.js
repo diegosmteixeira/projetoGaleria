@@ -1,5 +1,13 @@
 import $ from 'jQuery'
 
+const loadHtmlSuccessCallbacks = []
+
+export function onLoadHtmlSuccess(callback) {
+    if(!loadHtmlSuccessCallbacks.includes(callback)) {
+        loadHtmlSuccessCallbacks.push(callback)
+    }
+}
+
 //parent é a tag que possui wm-include
 function loadIncludes(parent) {
     if(!parent) parent = 'body'
@@ -11,6 +19,8 @@ function loadIncludes(parent) {
                 $(e).html(data)
                 $(e).removeAttr('wm-include')
 
+                loadHtmlSuccessCallbacks.forEach(
+                    callback => callback(data))
                 loadIncludes(e)
             }
         })
